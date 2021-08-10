@@ -20,6 +20,7 @@ namespace waAgenda
             String email = tbEmail.Text;
             String senha = tbSenha.Text;
 
+
             //Conexão com o banco
             System.Configuration.Configuration rootWebConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("/MyWebSiteRoot");
             System.Configuration.ConnectionStringSettings connString;
@@ -38,12 +39,16 @@ namespace waAgenda
             SqlDataReader registro = cmd.ExecuteReader();
             if (registro.HasRows)
             {
+                //cookie
+                HttpCookie Login = new HttpCookie("Login", email);
+                Response.Cookies.Add(Login);
                 //Direcionar para a pagina principal
                 Response.Redirect("~/Index.aspx");
             }
             else
             {
-                lblMsg.Text = "E-mail ou senha invalido";
+                Response.Write("<script> alert('E-mail ou senha invalido');</script>");
+                //lblMsg.Text = "E-mail ou senha invalido";
             }
 
 
