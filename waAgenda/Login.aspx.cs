@@ -8,17 +8,19 @@ using System.Web.UI.WebControls;
 
 namespace waAgenda
 {
-    public partial class Contatos : System.Web.UI.Page
+    public partial class Login : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
 
         }
 
-        protected void btnSalvar_Click(object sender, EventArgs e)
+        protected void Button1_Click(object sender, EventArgs e)
         {
+            String email = tbEmail.Text;
+            String senha = tbSenha.Text;
 
-            //Capturar a string de conexão
+            //Conexão com o banco
             System.Configuration.Configuration rootWebConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("/MyWebSiteRoot");
             System.Configuration.ConnectionStringSettings connString;
             connString = rootWebConfig.ConnectionStrings.ConnectionStrings["ConnectionString"];
@@ -28,19 +30,26 @@ namespace waAgenda
             con.ConnectionString = connString.ToString();
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = con;
-            cmd.CommandText = "Insert into contato (Nome,Email,Telefone) values (@Nome,@Email,@Telefone)";
-            cmd.Parameters.AddWithValue("Nome", tbNome.Text);
-            cmd.Parameters.AddWithValue("Email", tbEmail.Text);
-            cmd.Parameters.AddWithValue("Telefone", tbTelefone.Text);
+            cmd.CommandText = "select *from Usuario where Email = @Email and Senha = @Senha";
+            cmd.Parameters.AddWithValue("Email", email);
+            cmd.Parameters.AddWithValue("Senha", senha);
             con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
-            GridView1.DataBind();
 
-            //Limpando os campos apos inserir
-            tbNome.Text = "";
-            tbEmail.Text = "";
-            tbTelefone.Text = "";
+            SqlDataReader registro = cmd.ExecuteReader();
+            if (registro.HasRows)
+            {
+                //Direcionar para a pagina principal
+                Response.Redirect("~/Index.aspx");
+            }
+            else
+            {
+                lblMsg.Text = "E-mail ou senha invalido";
+            }
+
+
+
+
+
         }
     }
 }
