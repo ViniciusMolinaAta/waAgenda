@@ -13,5 +13,23 @@ namespace waAgenda
         {
 
         }
+
+        protected void SqlDataSourceUsuarios_Inserted(object sender, SqlDataSourceStatusEventArgs e)
+        {
+            if(e.Exception != null)
+            {
+                lblMsg.Text = "Inserindo um registro duplicado ou com campos em branco. Verifique!";
+                e.ExceptionHandled = true;
+            }
+        }
+
+        protected void SqlDataSourceUsuarios_Updated(object sender, SqlDataSourceStatusEventArgs e)
+        {
+            if (e.Exception != null)
+            {
+                lblMsg.Text = "Alterando um registro sem informar os campos. Verifique!";
+                e.ExceptionHandled = true;
+            }
+        }
     }
 }
