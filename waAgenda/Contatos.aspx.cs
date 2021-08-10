@@ -18,29 +18,48 @@ namespace waAgenda
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
 
-            //Capturar a string de conexão
-            System.Configuration.Configuration rootWebConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("/MyWebSiteRoot");
-            System.Configuration.ConnectionStringSettings connString;
-            connString = rootWebConfig.ConnectionStrings.ConnectionStrings["ConnectionString"];
+            try
+            {
+                if (tbEmail.Text != "" && tbNome.Text != "" && tbTelefone.Text != "")
+                {
 
-            //criar um objeto de conexão
-            SqlConnection con = new SqlConnection();
-            con.ConnectionString = connString.ToString();
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = con;
-            cmd.CommandText = "Insert into contato (Nome,Email,Telefone) values (@Nome,@Email,@Telefone)";
-            cmd.Parameters.AddWithValue("Nome", tbNome.Text);
-            cmd.Parameters.AddWithValue("Email", tbEmail.Text);
-            cmd.Parameters.AddWithValue("Telefone", tbTelefone.Text);
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
-            GridView1.DataBind();
+                    //Capturar a string de conexão
+                    System.Configuration.Configuration rootWebConfig = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("/MyWebSiteRoot");
+                    System.Configuration.ConnectionStringSettings connString;
+                    connString = rootWebConfig.ConnectionStrings.ConnectionStrings["ConnectionString"];
 
-            //Limpando os campos apos inserir
-            tbNome.Text = "";
-            tbEmail.Text = "";
-            tbTelefone.Text = "";
+                    //criar um objeto de conexão
+                    SqlConnection con = new SqlConnection();
+                    con.ConnectionString = connString.ToString();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = con;
+                    cmd.CommandText = "Insert into contato (Nome,Email,Telefone) values (@Nome,@Email,@Telefone)";
+                    cmd.Parameters.AddWithValue("Nome", tbNome.Text);
+                    cmd.Parameters.AddWithValue("Email", tbEmail.Text);
+                    cmd.Parameters.AddWithValue("Telefone", tbTelefone.Text);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                    GridView1.DataBind();
+                }
+                else
+                {
+                    throw new Exception("Campos em branco");
+                }
+            }
+            catch (Exception erro)
+            {
+                Response.Write("<script> alert('" + erro.Message + "'); </script>");
+            }
+            finally
+            {
+                //Limpando os campos apos inserir
+                tbNome.Text = "";
+                tbEmail.Text = "";
+                tbTelefone.Text = "";
+            }
+
+         
         }
     }
 }
